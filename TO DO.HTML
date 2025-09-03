@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple To-Do App</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .wrapper {
+      width: 400px;
+      max-width: 98vw;
+      background: #fff;
+      padding: 32px 28px 24px 28px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(60, 100, 180, 0.18);
+      border: 1px solid #e3eafc;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .wrapper:hover {
+      box-shadow: 0 12px 40px rgba(60, 100, 180, 0.22);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 22px;
+      color: #2c3e50;
+      font-size: 2rem;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .inputs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .inputs input,
+    .inputs button {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #bfc9d8;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .inputs input:focus {
+      border-color: #3f8efc;
+      outline: none;
+    }
+    .inputs input[type="text"] {
+      flex: 2;
+      background: #f7faff;
+      min-width: 0;
+    }
+    .inputs input[type="datetime-local"] {
+      flex: 1.5;
+      background: #f7faff;
+      min-width: 0;
+    }
+    .inputs button {
+      background: linear-gradient(90deg, #3f8efc 60%, #6a93f7 100%);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(63, 142, 252, 0.08);
+      transition: background 0.2s;
+    }
+    .inputs button:hover {
+      background: linear-gradient(90deg, #2c6ed1 60%, #3f8efc 100%);
+    }
+    ul {
+      list-style: none;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      background: #f7faff;
+      margin-bottom: 12px;
+      padding: 14px 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(60, 100, 180, 0.07);
+      transition: background 0.2s;
+      position: relative;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    li.done {
+      text-decoration: line-through;
+      background: #e3eafc;
+      color: #888;
+    }
+    li span {
+      flex: 1;
+      font-size: 1.08rem;
+      color: #2c3e50;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    li.done span {
+      color: #888;
+    }
+    li small {
+      color: #3f8efc;
+      font-size: 0.95em;
+      font-weight: 500;
+    }
+    .btns {
+      display: flex;
+      gap: 6px;
+    }
+    .btns button {
+      margin-left: 0;
+      padding: 7px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 1px 4px rgba(60, 100, 180, 0.08);
+      transition: background 0.2s, color 0.2s;
+    }
+    .btns button:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+    .btns .done {
+      background: linear-gradient(90deg, #28a745 60%, #43e97b 100%);
+      color: #fff;
+    }
+    .btns .edit {
+      background: linear-gradient(90deg, #ffc107 60%, #ffe082 100%);
+      color: #444;
+    }
+    .btns .delete {
+      background: linear-gradient(90deg, #dc3545 60%, #ff6a6a 100%);
+      color: #fff;
+    }
+    @media (max-width: 500px) {
+      .wrapper {
+        width: 98vw;
+        max-width: 100vw;
+        padding: 18px 6vw;
+      }
+      h2 {
+        font-size: 1.3rem;
+      }
+      .inputs input,
+      .inputs button {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+      li {
+        font-size: 0.98rem;
+        padding: 10px 7px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h2>My To-Do List</h2>
+    <div class="inputs">
+      <input type="text" id="taskText" placeholder="Task details">
+      <input type="datetime-local" id="taskDate">
+      <button onclick="addTask()">Add</button>
+    </div>
+    <ul id="list"></ul>
+  </div>
+
+  <script>
+    function addTask() {
+      const text = document.getElementById('taskText').value;
+      const date = document.getElementById('taskDate').value;
+      if (text.trim() === "") return;
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${text} ${date ? `<br><small>⏰ ${date}</small>` : ''}</span>
+        <div class="btns">
+          <button class="done" onclick="toggleDone(this)">Done</button>
+          <button class="edit" onclick="editTask(this)">Edit</button>
+          <button class="delete" onclick="deleteTask(this)">Del</button>
+        </div>
+      `;
+
+      document.getElementById('list').appendChild(li);
+      document.getElementById('taskText').value = "";
+      document.getElementById('taskDate').value = "";
+    }
+
+    function toggleDone(btn) {
+      btn.closest('li').classList.toggle('done');
+    }
+
+    function editTask(btn) {
+      const li = btn.closest('li');
+      const span = li.querySelector('span');
+      const current = span.innerText.split("⏰")[0].trim();
+      const updated = prompt("Edit task:", current);
+      if (updated !== null && updated.trim() !== "") {
+        span.innerHTML = updated;
+      }
+    }
+
+    function deleteTask(btn) {
+      btn.closest('li').remove();
+    }
+  </script>
+</body>
+</html>

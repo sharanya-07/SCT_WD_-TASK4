@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple To-Do App</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .wrapper {
+      width: 380px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 18px;
+      color: #444;
+    }
+    .inputs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 15px;
+    }
+    .inputs input,
+    .inputs button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+    }
+    .inputs input[type="text"] {
+      flex: 2;
+    }
+    .inputs input[type="datetime-local"] {
+      flex: 1.5;
+    }
+    .inputs button {
+      background: #3f8efc;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .inputs button:hover {
+      background: #2c6ed1;
+    }
+    ul {
+      list-style: none;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 0;
+    }
+    li {
+      background: #eef3fb;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    li.done {
+      text-decoration: line-through;
+      background: #dce2eb;
+      color: #666;
+    }
+    .btns button {
+      margin-left: 5px;
+      padding: 5px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+    .btns button:hover {
+      opacity: 0.8;
+    }
+    .btns .done { background: #28a745; color: #fff; }
+    .btns .edit { background: #ffc107; }
+    .btns .delete { background: #dc3545; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h2>My To-Do List</h2>
+    <div class="inputs">
+      <input type="text" id="taskText" placeholder="Task details">
+      <input type="datetime-local" id="taskDate">
+      <button onclick="addTask()">Add</button>
+    </div>
+    <ul id="list"></ul>
+  </div>
+
+  <script>
+    function addTask() {
+      const text = document.getElementById('taskText').value;
+      const date = document.getElementById('taskDate').value;
+      if (text.trim() === "") return;
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${text} ${date ? `<br><small>⏰ ${date}</small>` : ''}</span>
+        <div class="btns">
+          <button class="done" onclick="toggleDone(this)">Done</button>
+          <button class="edit" onclick="editTask(this)">Edit</button>
+          <button class="delete" onclick="deleteTask(this)">Del</button>
+        </div>
+      `;
+
+      document.getElementById('list').appendChild(li);
+      document.getElementById('taskText').value = "";
+      document.getElementById('taskDate').value = "";
+    }
+
+    function toggleDone(btn) {
+      btn.closest('li').classList.toggle('done');
+    }
+
+    function editTask(btn) {
+      const li = btn.closest('li');
+      const span = li.querySelector('span');
+      const current = span.innerText.split("⏰")[0].trim();
+      const updated = prompt("Edit task:", current);
+      if (updated !== null && updated.trim() !== "") {
+        span.innerHTML = updated;
+      }
+    }
+
+    function deleteTask(btn) {
+      btn.closest('li').remove();
+    }
+  </script>
+</body>
+</html>
